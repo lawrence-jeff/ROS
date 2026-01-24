@@ -1,0 +1,130 @@
+Install VirtualBox
+Install Ubuntu 24.04 64 bit - Jazzy
+60GB and 4GB memory
+
+Create user robot with password robot
+
+Export ROS_DISTRO=jazzy
+
+#Setup repositories and update
+sudo apt update -y 
+sudo apt upgrade -y 
+sudo add-apt-repository universe -y 
+
+#Install Common Apps/Utilities
+sudo apt install git -y
+sudo apt install net-tools -y
+sudo apt install terminator -y
+sudo apt-get install minicom -y 
+sudo apt install curl -y
+
+#Install Development Tools
+sudo apt install python3-pip -y
+Sudo apt install python3-dev -y
+sudo apt install python3-venv build-essential cmake software-properties-common -y
+echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc
+
+#Install Platform IO
+curl -fsSL -o get-platformio.py https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py
+python3 get-platformio.py
+rm get-platformio.py
+echo "PATH=\"\$PATH:\$HOME/.platformio/penv/bin\"" >> $HOME/.bashrc
+source ~/.bashrc
+curl -fsSL https://raw.githubusercontent.com/platformio/platformio-core/develop/platformio/assets/system/99-platformio-udev.rules | sudo tee /etc/udev/rules.d/99-platformio-udev.rules
+sudo service udev restart
+
+# Add User to groups
+sudo usermod -aG dialout,plugdev,video,render $USER
+
+#Install ROS
+sudo apt update
+export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F\" '{print $4}')
+curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo ${UBUNTU_CODENAME:-${VERSION_CODENAME}})_all.deb"
+sudo dpkg -i /tmp/ros2-apt-source.deb
+sudo apt update -y 
+sudo apt install ros-dev-tools -y
+sudo apt install python3-colcon-common-extensions -y
+sudo apt install ros-jazzy-desktop -y
+echo "/opt/ros/jazzy/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+
+# Init ROS-Dep
+sudo rosdep init
+rosdep update
+
+#pull Micro-Ros Firmware examples
+sudo apt remove -y brltty
+git clone https://github.com/hippo5329/micro_ros_arduino_examples_platformio.git
+
+#Install Common ROS Packages
+sudo apt install ros-jazzy-teleop-twist-keyboard -y 
+sudo apt install ros-jazzy-turtlesim -y
+sudo apt install ros-jazzy-rviz2 -y 
+sudo apt install ros-jazzy-ros2-control ros-jazzy-ros2-controllers -y 
+sudo apt install ros-jazzy-gazebo-ros-pkgs -y 
+sudo apt install ros-jazzy-joy -y 
+sudo apt install ros-jazzy-teleop-twist-joy -y 
+sudo apt install ros-jazzy-plotjuggler-ros -y
+sudo apt install ros-jazzy-rqt ros-jazzy-rqt-common-plugins ros-jazzy-rqt-robot-monitor -y
+
+#Latency Tuning for ROS
+sudo apt install -y tuned
+sudo systemctl start tuned
+sudo systemctl enable tuned
+sudo tuned-adm profile latency-performance
+sudo tuned-adm active
+
+#Install Micro-ROS Agent
+export ROS_DISTRO=jazzy
+mkdir -p ~/microros_ws/src
+cd ~/microros_ws/src
+git clone -b jazzy https://github.com/micro-ROS/micro-ROS-Agent.git
+cd ~/microros_ws
+rosdep install --from-paths src -y --ignore-src 
+colcon build
+source install/local_setup.bash
+cd ~
+
+#Install Arduino
+sudo apt install libfuse2 -y
+wget https://downloads.arduino.cc/arduino-ide/arduino-ide_latest_Linux_64bit.AppImage
+chmod +x arduino-ide_latest_Linux_64bit.AppImage
+
+#Install VSCode and Extensions
+sudo snap install --classic code
+code --install-extension Ranch-Hand-Robotics.rde-pack
+code --install-extension platformio.platformio-ide
+code --install-extension ms-vscode.cpptools
+code --install-extension ms-python.python
+code --install-extension ms-vscode.cmake-tools
+code --install-extension dotjoshjohnson.xml
+
+# Install Docker and Docker Compose
+sudo apt-get update
+sudo apt-get install ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
+
+
+#install AVRDUDE for programming over GPIO
+sudo apt-get update
+sudo apt-get install -y build-essential bison flex automake libelf-dev libusb-1.0-0-dev libusb-dev libftdi-dev libftdi1
+wget http://download.savannah.gnu.org/releases/avrdude/avrdude-6.1.tar.gz
+tar xvfz avrdude-6.1.tar.gz
+cd avrdude-6.1
+./configure --enable-linuxgpio
+cd ~
+
+
+
+mkdir ros_ws
