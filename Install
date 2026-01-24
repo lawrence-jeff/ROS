@@ -59,13 +59,14 @@ git clone https://github.com/hippo5329/micro_ros_arduino_examples_platformio.git
 #Test compilation
 cd micro_ros_arduino_examples_platformio/micro-ros_reconnection_example
 pio run -e esp32s3
+cd ~
 
 #Install Common ROS Packages
 sudo apt install ros-jazzy-teleop-twist-keyboard -y 
 sudo apt install ros-jazzy-turtlesim -y
 sudo apt install ros-jazzy-rviz2 -y 
 sudo apt install ros-jazzy-ros2-control ros-jazzy-ros2-controllers -y 
-sudo apt install ros-jazzy-gazebo-ros-pkgs -y 
+sudo apt install ros-jazzy-ros-gz -y
 sudo apt install ros-jazzy-joy -y 
 sudo apt install ros-jazzy-teleop-twist-joy -y 
 sudo apt install ros-jazzy-plotjuggler-ros -y
