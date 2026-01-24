@@ -46,7 +46,7 @@ sudo apt update -y
 sudo apt install ros-dev-tools -y
 sudo apt install python3-colcon-common-extensions -y
 sudo apt install ros-jazzy-desktop -y
-echo "/opt/ros/jazzy/setup.bash" >> ~/.bashrc
+echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
 source /opt/ros/jazzy/setup.bash
 
 # Init ROS-Dep
