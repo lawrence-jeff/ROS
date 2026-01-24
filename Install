@@ -18,6 +18,7 @@ sudo apt install net-tools -y
 sudo apt install terminator -y
 sudo apt-get install minicom -y 
 sudo apt install curl -y
+sudo apt install openssh-server -y
 
 #Install Development Tools
 sudo apt install python3-pip -y
