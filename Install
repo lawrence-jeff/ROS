@@ -1,5 +1,5 @@
 #Install VirtualBox
-#Install Ubuntu 24.04 64 bit - Jazzy
+#Install Ubuntu 24.04.3 64 bit - Jazzy
 #60GB and 4GB memory
 #Create user robot with password robot
 #Don't select install extensions during auto install -it crashes
@@ -47,7 +47,7 @@ sudo apt install ros-dev-tools -y
 sudo apt install python3-colcon-common-extensions -y
 sudo apt install ros-jazzy-desktop -y
 echo "/opt/ros/jazzy/setup.bash" >> ~/.bashrc
-source ~/.bashrc
+source /opt/ros/jazzy/setup.bash
 
 # Init ROS-Dep
 sudo rosdep init
@@ -56,6 +56,9 @@ rosdep update
 #pull Micro-Ros Firmware examples
 sudo apt remove -y brltty
 git clone https://github.com/hippo5329/micro_ros_arduino_examples_platformio.git
+#Test compilation
+cd micro_ros_arduino_examples_platformio/micro-ros_reconnection_example
+pio run -e esp32s3
 
 #Install Common ROS Packages
 sudo apt install ros-jazzy-teleop-twist-keyboard -y 
@@ -77,10 +80,10 @@ sudo tuned-adm active
 
 #Install Micro-ROS Agent
 export ROS_DISTRO=jazzy
-mkdir -p ~/microros_ws/src
-cd ~/microros_ws/src
+mkdir -p ~/ros_ws/src
+cd ~/ros_ws/src
 git clone -b jazzy https://github.com/micro-ROS/micro-ROS-Agent.git
-cd ~/microros_ws
+cd ~/ros_ws
 rosdep install --from-paths src -y --ignore-src 
 colcon build
 source install/local_setup.bash
@@ -106,15 +109,12 @@ sudo apt-get install ca-certificates curl gnupg
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
-
-# Add the repository to Apt sources:
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-
 
 
 #install AVRDUDE for programming over GPIO
@@ -125,7 +125,3 @@ tar xvfz avrdude-6.1.tar.gz
 cd avrdude-6.1
 ./configure --enable-linuxgpio
 cd ~
-
-
-
-mkdir ros_ws
