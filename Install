@@ -1,10 +1,11 @@
-Install VirtualBox
-Install Ubuntu 24.04 64 bit - Jazzy
-60GB and 4GB memory
+#Install VirtualBox
+#Install Ubuntu 24.04 64 bit - Jazzy
+#60GB and 4GB memory
+#Create user robot with password robot
+#Don't select install extensions during auto install -it crashes
 
-Create user robot with password robot
 
-Export ROS_DISTRO=jazzy
+export ROS_DISTRO=jazzy
 
 #Setup repositories and update
 sudo apt update -y 
