@@ -1,4 +1,4 @@
-// VEX 276-2151 PPM Receiver Reader
+// VEX 276-2151 PPM Receiver Reader for arduino
 //
 // PPM format:
 //   - Sync: ~9ms LOW pulse
